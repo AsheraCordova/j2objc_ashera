@@ -1,0 +1,12 @@
+<project name="replace-from-props" default="do-replace">
+    <target name="do-replace">
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/util/FileUtil.java" token="'/') + 1" value="File.separator) + 1"/>
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCHeaderGenerator.java" token='printf("#include \"%s\"\n", header);' value='printf("#include \"%s\"\n", header.replaceAll("\\\\", "/"));'/>
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCImplementationGenerator.java" token='if (memoryManagementOption ==' value='if (false &amp;&amp; memoryManagementOption =='/>
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCSegmentedHeaderGenerator.java" token='printf("#include \"%s\"\n", imp.getImportFileName());' value='printf("#include \"%s\"\n", imp.getImportFileName().replaceAll("\\\\", "/"));'/>
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCSourceFileGenerator.java" token='File outputFile = new File(outputDirectory, path);' value='File outputFile = new File(outputDirectory, new File(path).getName());'/>
+		<copy todir="j2objc" overwrite="true">  
+			<fileset dir="patch" includes="**"/>  
+		</copy>
+    </target>
+</project>
