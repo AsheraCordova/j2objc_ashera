@@ -2,11 +2,20 @@
     <target name="do-replace">
 		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/util/FileUtil.java" token="'/') + 1" value="File.separator) + 1"/>
 		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCHeaderGenerator.java" token='printf("#include \"%s\"\n", header);' value='printf("#include \"%s\"\n", header.replaceAll("\\\\", "/"));'/>
-		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCImplementationGenerator.java" token='if (memoryManagementOption ==' value='if (false &amp;&amp; memoryManagementOption =='/>
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCImplementationGenerator.java" token='printMemoryManagement();' value='//printMemoryManagement();'/>
+		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCImplementationGenerator.java" token='printf("%s \"%s\"\n", directive, header);' value='printf("%s \"%s\"\n", directive, header.replaceAll("\\\\", "/"));'/>
 		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCSegmentedHeaderGenerator.java" token='printf("#include \"%s\"\n", imp.getImportFileName());' value='printf("#include \"%s\"\n", imp.getImportFileName().replaceAll("\\\\", "/"));'/>
-		<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCSourceFileGenerator.java" token='File outputFile = new File(outputDirectory, path);' value='File outputFile = new File(outputDirectory, new File(path).getName());'/>
-		<copy todir="j2objc" overwrite="true">  
+		
+    </target>
+     <target name="do-replace-for-linux-docker">
+     	<copy todir="j2objc" overwrite="true">  
 			<fileset dir="patch" includes="**"/>  
 		</copy>
+     </target>
+     <target name="do-replace-for-xcode-for-14">    
+    	<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCSourceFileGenerator.java" token='__attribute__((disable_sanitizer_instrumentation))' value='//__attribute__((disable_sanitizer_instrumentation))'/>
+    	<replace file="j2objc/build_defs/j2objc_library.bzl" token='"-Wno-bitwise-instead-of-logical",' value=' '/>
+    	<replace file="j2objc/jre_emul/environment.mk" token='-Wno-bitwise-instead-of-logical' value=' '/>
+    	<replace file="j2objc/xalan/Makefile" token='-Wno-bitwise-instead-of-logical' value=' '/>
     </target>
 </project>
