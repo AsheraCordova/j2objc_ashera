@@ -13,9 +13,16 @@
 		</copy>
      </target>
      <target name="do-replace-for-xcode-for-14">    
-    	<replace file="j2objc/translator/src/main/java/com/google/devtools/j2objc/gen/ObjectiveCSourceFileGenerator.java" token='__attribute__((disable_sanitizer_instrumentation))' value='//__attribute__((disable_sanitizer_instrumentation))'/>
+    	<replace file="j2objc/jre_emul/apple_apsl/objc-sync.m" token='__attribute__((disable_sanitizer_instrumentation))' value='//__attribute__((disable_sanitizer_instrumentation))'/>
     	<replace file="j2objc/build_defs/j2objc_library.bzl" token='"-Wno-bitwise-instead-of-logical",' value=' '/>
     	<replace file="j2objc/jre_emul/environment.mk" token='-Wno-bitwise-instead-of-logical' value=' '/>
-    	<replace file="j2objc/xalan/Makefile" token='-Wno-bitwise-instead-of-logical' value=' '/>
+    	<replace file="j2objc/xalan/Makefile" token='CC_WARNINGS +=' value='#CC_WARNINGS +='/>
+    	<replace token='arch=x86_64' value='arch=x64'>
+    		<fileset file="j2objc/scripts/detect-java-platform.sh" />
+		</replace>
+		
+		<replace file="j2objc/junit/Makefile"
+          token="@patch -p1 -lf &lt; hamcrest-1.3.patch"
+         value="sed -i '' -e 's/return anyOf(Arrays.asList(matchers));/return AnyOf.&lt;T&gt;anyOf(Arrays.asList(matchers));/' -e 's/return allOf(Arrays.asList(matchers));/return AllOf.&lt;T&gt;allOf(Arrays.asList(matchers));/' build_result/java/org/hamcrest/core/AnyOf.java build_result/java/org/hamcrest/core/AllOf.java"/>
     </target>
 </project>
